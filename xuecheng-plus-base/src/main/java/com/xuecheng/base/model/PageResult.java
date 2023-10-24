@@ -1,4 +1,4 @@
-package com.xuecheng.base;
+package com.xuecheng.base.model;
 
 import lombok.Data;
 import lombok.ToString;
