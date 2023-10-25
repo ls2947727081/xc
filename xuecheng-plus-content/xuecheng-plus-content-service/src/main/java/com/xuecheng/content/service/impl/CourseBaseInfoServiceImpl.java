@@ -26,6 +26,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
+
     @Autowired(required = false)
     CourseBaseMapper courseBaseMapper;
 
