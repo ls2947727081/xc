@@ -18,7 +18,7 @@ import java.util.List;
  * @author liu
  * @version 1.0
  * @project xuecheng-plus-project
- * @description TOOD
+ * @description 课程查询接口
  * @date 2023/10/24 20:29:24
  */
 @Api(value = "课程信息编辑接口",tags = "课程信息编辑接口")
