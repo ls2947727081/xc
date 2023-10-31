@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class CourseCategoryServiceImpl implements CourseCategoryService {
 
-    @Autowired(required = false)
+    @Autowired
     CourseCategoryMapper courseCategoryMapper;
 
 

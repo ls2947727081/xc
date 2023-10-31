@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
 import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.model.dto.AddCourseDto;
+import com.xuecheng.content.mapper.CourseCategoryMapper;
+import com.xuecheng.content.model.dto.CourseCategoryTreeDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.service.CourseBaseInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,28 +26,14 @@ import java.util.List;
  */
 
 @SpringBootTest
-public class CourseBaseinfoServiceTests {
+public class CoursecagegoryMapperTests {
 
-    @Autowired
-    CourseBaseInfoService courseBaseInfoService;
+    @Autowired(required = false)
+    CourseCategoryMapper courseCategoryMapper;
 
     @Test
-    public void testCourseBaseMapper(){
-        //拼装查询条件
-        QueryCourseParamsDto courseParamsDto = new QueryCourseParamsDto();
-        //课程名称查询条件
-        courseParamsDto.setCourseName("java");
-        courseParamsDto.setAuditStatus("202004");
-
-        //        分页参数对象
-        PageParams pageParams = new PageParams();
-        pageParams.setPageNo(2L);
-        pageParams.setPageSize(2L);
-
-
-        PageResult<CourseBase> courseBasePageResult = courseBaseInfoService.queryCourseBaseList(pageParams, courseParamsDto);
-        System.out.println(courseBasePageResult);
+    public void testCourseCategoryMapper(){
+        List<CourseCategoryTreeDto> courseCategoryTreeDtos = courseCategoryMapper.selectTreeNodes("1");
+        System.out.println(courseCategoryTreeDtos);
     }
-
-
 }
