@@ -2,6 +2,7 @@ package com.xuecheng.content.service;
 
 import com.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
+import com.xuecheng.content.model.po.CourseTeacher;
 
 import java.util.List;
 
@@ -26,4 +27,24 @@ public interface TeachplanService {
    * @param saveTeachplanDto
    */
   public void saveTeachplan(SaveTeachplanDto saveTeachplanDto);
+
+  /**
+   * 删除课程方法
+   * @param id 课程的id
+   */
+  public void deleTeachplan(Long id);
+
+  /**
+   * 下移课程的方法
+   * @param id 课程id
+   */
+  public void movedown(Long id);
+
+  /**
+   * 上移课程的方法
+   * @param id 课程id
+   */
+  public void moveup(Long id);
+
+
 }

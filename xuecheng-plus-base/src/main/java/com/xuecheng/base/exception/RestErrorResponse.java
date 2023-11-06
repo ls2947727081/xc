@@ -1,5 +1,7 @@
 package com.xuecheng.base.exception;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -9,20 +11,19 @@ import java.io.Serializable;
  * @description TOOD
  * @date 2023/10/29 12:59:54
  */
-
+@Data
 public class RestErrorResponse implements Serializable {
 
+  private String errCode;
   private String errMessage;
 
   public RestErrorResponse(String errMessage){
     this.errMessage= errMessage;
   }
 
-  public String getErrMessage() {
-    return errMessage;
+  public RestErrorResponse(String errCode,String errMessage){
+    this.errMessage= errMessage;
+    this.errCode = errCode;
   }
 
-  public void setErrMessage(String errMessage) {
-    this.errMessage = errMessage;
-  }
 }

@@ -30,6 +30,4 @@ public class XueChengPlusException extends RuntimeException{
         throw new XueChengPlusException(errMessage.getErrMessage());
     }
 
-
-
 }

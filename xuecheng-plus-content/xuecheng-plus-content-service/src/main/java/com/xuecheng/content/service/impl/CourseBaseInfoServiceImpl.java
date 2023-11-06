@@ -5,16 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.mapper.CourseCategoryMapper;
-import com.xuecheng.content.mapper.CourseMarketMapper;
-import com.xuecheng.content.model.dto.AddCourseDto;
-import com.xuecheng.content.model.dto.CourseBaseInfoDto;
-import com.xuecheng.content.model.dto.EditCourseDto;
-import com.xuecheng.content.model.dto.QueryCourseParamsDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseCategory;
-import com.xuecheng.content.model.po.CourseMarket;
+import com.xuecheng.content.mapper.*;
+import com.xuecheng.content.model.dto.*;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.CourseBaseInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +39,19 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     @Autowired
     CourseCategoryMapper courseCategoryMapper;
+
+
+    @Autowired
+    CoursePublishMapper coursePublishMapper;
+
+    @Autowired
+    CourseTeacherMapper courseTeacherMapper;
+
+    @Autowired
+    TeachplanMapper teachplanMapper;
+
+    @Autowired
+    TeachplanMediaMapper teachplanMediaMapper;
 
     /**
      * 课程分页查询
@@ -234,6 +240,51 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         return courseBaseInfo;
     }
+
+    @Override
+    @Transactional
+    public void deleteCourseBase(Long companyId, Long id) {
+        CourseBase courseBase = courseBaseMapper.selectById(id);
+        if (courseBase!=null){
+            if (courseBase.getCompanyId().equals(companyId)) {
+                courseBaseMapper.deleteById(id);
+                CourseMarket courseMarket = courseMarketMapper.selectById(id);
+                if (courseMarket!=null){
+                    courseMarketMapper.deleteById(id);
+                }
+                CoursePublish coursePublish = coursePublishMapper.selectById(id);
+                if (coursePublish!=null){
+                    coursePublishMapper.deleteById(id);
+                }
+
+                List<CourseTeacher> courseTeachers = courseTeacherMapper.selectByCourseId(id);
+                if (courseTeachers != null) {
+                    for (CourseTeacher courseTeacher : courseTeachers) {
+                        courseTeacherMapper.deleteById(courseTeacher.getId()); // 假设 delete 方法接受对象的 ID 或对象本身作为参数
+                    }
+                }
+                List<TeachplanDto> teachplanDtos = teachplanMapper.selectByCourseId(id);
+                if (teachplanDtos != null && !teachplanDtos.isEmpty()) {
+                    for (Teachplan teachplan : teachplanDtos) {
+                        // 执行删除操作
+                        teachplanMapper.deleteById(teachplan.getId()); // 假设这是删除操作，deleteById 方法需要根据你的 MyBatis Mapper 自定义
+                    }
+                }
+
+                List<TeachplanMedia> teachplanMediaList = teachplanMediaMapper.selectByCourseId(id);
+                if (teachplanMediaList!=null){
+                    for (TeachplanMedia teachplanMedia : teachplanMediaList) {
+                        teachplanMediaMapper.deleteById(teachplanMedia.getId());
+                    }
+                }
+
+            }else {
+                XueChengPlusException.cast("非本机构课程不得删除！");
+            }
+
+        }
+    }
+
 
     //    单独写一个方法保存营销信息，存在则更新，不存在则添加
     private int saveCourseMarket(CourseMarket courseMarketNew){

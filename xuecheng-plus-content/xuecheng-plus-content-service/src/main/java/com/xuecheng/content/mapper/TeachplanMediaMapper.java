@@ -3,6 +3,8 @@ package com.xuecheng.content.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xuecheng.content.model.po.TeachplanMedia;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -11,5 +13,10 @@ import com.xuecheng.content.model.po.TeachplanMedia;
  * @author itcast
  */
 public interface TeachplanMediaMapper extends BaseMapper<TeachplanMedia> {
+
+    public TeachplanMedia selectTeachPlanById(Long teachPlanId);
+
+    List<TeachplanMedia> selectByCourseId(Long courseId);
+
 
 }

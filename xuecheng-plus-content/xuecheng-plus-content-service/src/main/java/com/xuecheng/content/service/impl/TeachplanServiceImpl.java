@@ -1,10 +1,16 @@
 package com.xuecheng.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xuecheng.base.exception.RestErrorResponse;
+import com.xuecheng.base.exception.XCerrcodeException;
+import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.content.mapper.TeachplanMapper;
+import com.xuecheng.content.mapper.TeachplanMediaMapper;
 import com.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
+import com.xuecheng.content.model.po.CourseTeacher;
 import com.xuecheng.content.model.po.Teachplan;
+import com.xuecheng.content.model.po.TeachplanMedia;
 import com.xuecheng.content.service.TeachplanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +32,9 @@ public class TeachplanServiceImpl implements TeachplanService {
 
     @Autowired
     private TeachplanMapper teachplanMapper;
+
+    @Autowired
+    TeachplanMediaMapper teachplanMediaMapper;
 
     @Override
     public List<TeachplanDto> findTeachplanTree(long courseId) {
@@ -63,4 +72,86 @@ public class TeachplanServiceImpl implements TeachplanService {
         }
 
     }
+
+    @Override
+    public void deleTeachplan(Long id) {
+        //判断数据库中是否存在id
+        List<TeachplanDto> teachplanDtos = teachplanMapper.checkTreeNodes(id);
+        if (teachplanDtos.size()==0){
+            TeachplanMedia teachplanMedia = teachplanMediaMapper.selectTeachPlanById(id);
+            if (teachplanMedia!=null){
+                teachplanMediaMapper.deleteById(teachplanMedia.getId());
+            }
+            teachplanMapper.deleteById(id);
+        }else {
+            XCerrcodeException.cast("120409","课程计划信息还有子级信息，无法操作");
+        }
+
+
+    }
+
+    @Override
+    public void movedown(Long id) {
+//        查找下一行是不是存在
+        Teachplan teachplan = teachplanMapper.selectById(id);
+
+        if (teachplan.getParentid()==0){
+            List<TeachplanDto> teachplanDtos = teachplanMapper.selectTreeNodes(teachplan.getCourseId());
+            move(1,teachplan, teachplanDtos);
+
+        }else {
+            List<TeachplanDto> teachplanDtos = teachplanMapper.checkTreeNodes(teachplan.getParentid());
+            move(1,teachplan, teachplanDtos);
+        }
+//        不存在就报个错误，说不存在下一行
+//        XueChengPlusException.cast("下移失败，检查下一行是否存在");
+    }
+
+
+
+    @Override
+    public void moveup(Long id) {
+        Teachplan teachplan = teachplanMapper.selectById(id);
+
+        if (teachplan.getParentid()==0){
+            List<TeachplanDto> teachplanDtos = teachplanMapper.selectTreeNodes(teachplan.getCourseId());
+            move(2,teachplan,teachplanDtos);
+        }else {
+            List<TeachplanDto> teachplanDtos = teachplanMapper.checkTreeNodes(teachplan.getParentid());
+            move(2,teachplan,teachplanDtos);
+
+        }
+//        不存在就报个错误，说不存在下一行
+//        XueChengPlusException.cast("上移失败，检查上一行是否存在");
+    }
+
+
+
+
+    private void move(int bool,Teachplan teachplan, List<TeachplanDto> teachplanDtos) {
+        Teachplan temp = teachplan;
+        for (TeachplanDto item : teachplanDtos) {
+            if (bool==1){
+                if (teachplan.getParentid().equals(item.getParentid()) && teachplan.getOrderby() < item.getOrderby()) {
+                    temp = item;
+                    break;
+                }
+            }
+            if (bool==2){
+                if (teachplan.getParentid().equals(item.getParentid()) && teachplan.getOrderby()>item.getOrderby()) {
+                    temp = item;
+                }
+            }
+        }
+        if (temp!=teachplan){
+            Integer orderby = temp.getOrderby();
+            temp.setOrderby(teachplan.getOrderby());
+            teachplan.setOrderby(orderby);
+            teachplanMapper.updateById(teachplan);
+            teachplanMapper.updateById(temp);
+        }
+    }
+
 }
+
+

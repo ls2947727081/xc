@@ -56,3 +56,17 @@ Content-Type: application/json
 
 ###
 GET http://{{content_host}}/content/teachplan/117/tree-nodes
+
+###
+PUT http://{{content_host}}/content/courseTeacher
+Content-Type: application/json
+
+{
+  "id": 27,
+  "courseId": 117,
+  "teacherName": "LIU老师",
+  "position": "教师职位",
+  "introduction": "教师简介",
+  "photograph": null,
+  "createDate": null
+}

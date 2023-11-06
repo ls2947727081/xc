@@ -42,6 +42,21 @@ public class GlobalExceptionHandler {
   }
 
 
+  @ExceptionHandler(XCerrcodeException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public RestErrorResponse errcodeException(XCerrcodeException e){
+//    记录异常日志
+    log.error("系统异常{}",e.getErrMessage(),e);
+
+
+//    解析出异常信息
+    String errMessage = e.getErrMessage();
+    String errCode = e.getErrCode();
+    RestErrorResponse restErrorResponse = new RestErrorResponse(errCode,errMessage);
+    return restErrorResponse;
+  }
+
+
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public RestErrorResponse exception(Exception e){

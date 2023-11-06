@@ -1,7 +1,9 @@
 package com.xuecheng.content.api;
 
+import com.xuecheng.base.exception.RestErrorResponse;
 import com.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
+import com.xuecheng.content.model.po.CourseTeacher;
 import com.xuecheng.content.service.TeachplanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -41,5 +43,30 @@ public class TeachplanController {
       //开始执行service
       teachplanService.saveTeachplan(teachplan);
   }
+
+  @ApiOperation("课程计划删除")
+  @DeleteMapping("/teachplan/{id}")
+  public void deleteTeachplan(@PathVariable Long id){
+//      执行delete
+    teachplanService.deleTeachplan(id);
+  }
+
+
+  @ApiOperation("课程计划排序")
+  @PostMapping("/teachplan/movedown/{id}")
+  public void movedownTeachplan(@PathVariable Long id){
+//      执行movedown
+    teachplanService.movedown(id);
+  }
+
+  @ApiOperation("课程计划排序")
+  @PostMapping("/teachplan/moveup/{id}")
+  public void moveupTeachplan(@PathVariable Long id){
+//      执行movedown
+    teachplanService.moveup(id);
+  }
+
+
+
 
 }

@@ -18,4 +18,8 @@ public interface TeachplanMapper extends BaseMapper<Teachplan> {
 
     public List<TeachplanDto> selectTreeNodes(Long courseId);
 
+    public List<TeachplanDto> checkTreeNodes(Long parentid);
+
+    public List<TeachplanDto> selectByCourseId(Long courseId);
+
 }
